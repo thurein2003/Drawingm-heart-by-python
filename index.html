@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#f6f7fb">
+    <meta name="description" content="Explore simple diagrams and see how to draw them in Python, JavaScript, and Java.">
+    <title>ShapeScript — Draw it. Learn how.</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css?v=1">
+    <script src="app.js?v=1" defer></script>
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="topbar">
+        <a class="brand" href="#top" aria-label="ShapeScript home">
+          <span class="brand-mark" aria-hidden="true"><svg viewBox="0 0 40 40"><path d="M20 33 7.8 21.4C.6 14.3 10.9 5.5 20 14.8 29.1 5.5 39.4 14.3 32.2 21.4L20 33Z"/><path d="m13 21 4.3 4.1L27 15"/></svg></span>
+          <span class="brand-name">shape<span>script</span></span>
+        </a>
+        <nav class="topnav" aria-label="Main navigation">
+          <a href="#studio">Studio</a>
+          <a href="#how-it-works">How it works</a>
+          <a class="github-link" href="https://github.com/thurein2003/Drawingm-heart-by-python" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 .9a11.1 11.1 0 0 0-3.5 21.6c.6.1.8-.3.8-.6v-2.2c-3.2.7-3.9-1.4-3.9-1.4-.5-1.3-1.3-1.6-1.3-1.6-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.8 2.7 1.3 3.4 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.4-1.3-5.4-5.8 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.2 1.2a11 11 0 0 1 5.8 0c2.2-1.5 3.2-1.2 3.2-1.2.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.5-2.8 5.5-5.4 5.8.4.4.8 1 .8 2v3c0 .3.2.7.8.6A11.1 11.1 0 0 0 12 .9Z"/></svg>
+            GitHub <span class="external-arrow" aria-hidden="true">↗</span>
+          </a>
+        </nav>
+      </header>
+
+      <main id="top">
+        <section class="hero" aria-labelledby="hero-title">
+          <div class="hero-copy">
+            <div class="eyebrow"><span class="eyebrow-dot"></span> A LITTLE DRAWING PLAYGROUND</div>
+            <h1 id="hero-title">Make a shape.<br><span>See the code.</span></h1>
+            <p class="hero-description">Pick a diagram, choose a language, and explore the simple instructions behind the picture.</p>
+            <a class="primary-button" href="#studio">Open the studio <span aria-hidden="true">↓</span></a>
+            <div class="hero-notes" aria-label="Project features">
+              <span><i class="check-icon">✓</i> Free to explore</span>
+              <span><i class="check-icon">✓</i> No sign-up needed</span>
+            </div>
+          </div>
+          <div class="hero-art" aria-hidden="true">
+            <div class="art-orbit orbit-one"></div><div class="art-orbit orbit-two"></div>
+            <div class="art-label label-top"><span class="mini-dot violet"></span> draw(heart)</div>
+            <svg class="hero-heart" viewBox="0 0 260 230"><defs><linearGradient id="heroHeartFill" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff7a72"/><stop offset="1" stop-color="#f45176"/></linearGradient><filter id="heroHeartGlow" x="-40%" y="-40%" width="180%" height="180%"><feGaussianBlur stdDeviation="12" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs><path d="M130 207 35 116C-13 65 54 7 130 73 206 7 273 65 225 116L130 207Z" fill="url(#heroHeartFill)" filter="url(#heroHeartGlow)"/><path d="M76 112c10 12 20 20 33 25" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" opacity=".72"/></svg>
+            <div class="art-label label-bottom"><span class="mini-dot mint"></span> made with a few lines</div>
+            <span class="floating-spark spark-one">✳</span><span class="floating-spark spark-two">✦</span>
+          </div>
+          <div class="hero-bottom-line"><span>01 / DRAWING BASICS</span><span class="line-grow"></span><span>MADE FOR CURIOUS MINDS</span></div>
+        </section>
+
+        <section class="studio-section" id="studio" aria-labelledby="studio-title">
+          <div class="section-heading">
+            <div><div class="section-kicker">THE PLAYGROUND</div><h2 id="studio-title">Your drawing studio</h2></div>
+            <p>Change a shape or language.<br>Your preview and code update together.</p>
+          </div>
+
+          <div class="studio-grid">
+            <aside class="controls-card" aria-label="Drawing controls">
+              <div class="card-heading"><span class="step-number">01</span><div><h3>Choose a diagram</h3><p>Start with a shape to draw.</p></div></div>
+              <div class="shape-grid" role="group" aria-label="Choose a diagram">
+                <button class="shape-choice is-selected" type="button" data-shape="heart" aria-pressed="true"><span class="shape-glyph">♡</span><span>Heart</span></button>
+                <button class="shape-choice" type="button" data-shape="star" aria-pressed="false"><span class="shape-glyph">✳</span><span>Star</span></button>
+                <button class="shape-choice" type="button" data-shape="circles" aria-pressed="false"><span class="shape-glyph circles-glyph">◎</span><span>Circles</span></button>
+                <button class="shape-choice" type="button" data-shape="flower" aria-pressed="false"><span class="shape-glyph">✿</span><span>Flower</span></button>
+                <button class="shape-choice" type="button" data-shape="spiral" aria-pressed="false"><span class="shape-glyph spiral-glyph">＠</span><span>Spiral</span></button>
+                <button class="shape-choice" type="button" data-shape="diamond" aria-pressed="false"><span class="shape-glyph">◇</span><span>Diamond</span></button>
+              </div>
+
+              <div class="control-divider"></div>
+              <div class="card-heading language-heading"><span class="step-number">02</span><div><h3>Choose a language</h3><p>See the drawing in code.</p></div></div>
+              <label class="select-wrap" for="language-select"><span class="sr-only">Programming language</span><select id="language-select"><option value="python">Python · Turtle</option><option value="javascript">JavaScript · Canvas</option><option value="java">Java · Swing</option><option value="cpp">C++ · SFML</option></select><span class="select-chevron" aria-hidden="true">⌄</span></label>
+
+              <div class="control-divider color-divider"></div>
+              <div class="color-heading"><div><h3>Ink color</h3><p>Pick an accent for your drawing.</p></div></div>
+              <div class="color-options" role="group" aria-label="Choose drawing color">
+                <button class="color-choice selected" type="button" data-color="#6258d9" style="--swatch:#6258d9" aria-label="Violet ink" aria-pressed="true"></button>
+                <button class="color-choice" type="button" data-color="#ed6a5a" style="--swatch:#ed6a5a" aria-label="Coral ink" aria-pressed="false"></button>
+                <button class="color-choice" type="button" data-color="#218a72" style="--swatch:#218a72" aria-label="Forest ink" aria-pressed="false"></button>
+                <button class="color-choice" type="button" data-color="#3573c8" style="--swatch:#3573c8" aria-label="Blue ink" aria-pressed="false"></button>
+                <button class="color-choice" type="button" data-color="#d69a35" style="--swatch:#d69a35" aria-label="Gold ink" aria-pressed="false"></button>
+              </div>
+
+              <div class="privacy-note"><span class="privacy-icon">✦</span><span>Your choices stay in this browser.<br>No account or data collection.</span></div>
+            </aside>
+
+            <div class="workbench">
+              <section class="preview-card" aria-labelledby="preview-title">
+                <div class="workbench-topline"><div><span class="live-indicator"></span><span>LIVE PREVIEW</span></div><span class="preview-size">SVG · 500 × 320</span></div>
+                <div class="drawing-stage" id="drawing-stage">
+                  <div class="stage-grid" aria-hidden="true"></div>
+                  <div class="stage-caption"><span class="stage-index">FIG. 01</span><span id="stage-shape-label">THE HEART</span></div>
+                  <svg id="preview-svg" viewBox="0 0 500 320" role="img" aria-label="Heart diagram preview" xmlns="http://www.w3.org/2000/svg"></svg>
+                  <span class="stage-coordinate coord-left" aria-hidden="true">x: 250</span><span class="stage-coordinate coord-right" aria-hidden="true">y: 160</span>
+                </div>
+                <div class="preview-footer"><div class="preview-shape-name"><span class="small-spark">✦</span><span id="preview-title">Heart</span><span class="tag-pill">VECTOR DRAWING</span></div><span class="preview-hint">Select a shape to begin</span></div>
+              </section>
+
+              <section class="code-card" aria-labelledby="code-title">
+                <div class="code-toolbar">
+                  <div class="code-file"><span class="file-dot"></span><span id="code-title">drawing.py</span><span class="code-subtitle" id="code-subtitle">Python · Turtle</span></div>
+                  <div class="code-actions"><button class="icon-button" id="copy-code" type="button" aria-label="Copy code" title="Copy code"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="6" width="10" height="11" rx="2"/><path d="M13 4V3.5A1.5 1.5 0 0 0 11.5 2h-7A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14H5"/></svg></button><button class="download-button" id="download-code" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m0 0 4-4m-4 4L6 8M3 14v3h14v-3"/></svg><span>Download</span></button></div>
+                </div>
+                <div class="code-window"><div class="line-rail" id="line-numbers" aria-hidden="true"></div><pre class="code-content"><code id="code-output" aria-live="polite"></code></pre></div>
+                <div class="code-footer"><span><span class="footer-dot"></span><span id="runtime-note">Runs with Python's built-in Turtle module</span></span><span class="copy-feedback" id="copy-feedback" role="status" aria-live="polite"></span></div>
+              </section>
+            </div>
+          </div>
+        </section>
+
+        <section class="how-section" id="how-it-works" aria-labelledby="how-title">
+          <div class="how-intro"><div class="section-kicker">A SIMPLE IDEA</div><h2 id="how-title">From a few steps<br>to something lovely.</h2><p>Drawing is a great way to learn how code gives instructions. Change one choice at a time and see what happens.</p></div>
+          <div class="how-steps">
+            <article class="how-step"><span class="how-number">01</span><div class="how-icon icon-shape">◇</div><h3>Pick a shape</h3><p>Choose a diagram and watch the canvas redraw it.</p></article>
+            <article class="how-step"><span class="how-number">02</span><div class="how-icon icon-code">{ }</div><h3>Explore the code</h3><p>Switch languages to compare the drawing instructions.</p></article>
+            <article class="how-step"><span class="how-number">03</span><div class="how-icon icon-export">↗</div><h3>Take it with you</h3><p>Copy the example or download it to experiment further.</p></article>
+          </div>
+        </section>
+
+        <section class="closing-banner"><div class="closing-mark">✳</div><div><div class="section-kicker">YOUR TURN</div><h2>Pick. Play. Make it yours.</h2><p>Try a different combination and see where curiosity takes you.</p></div><a class="secondary-button" href="#studio">Back to the studio <span aria-hidden="true">↑</span></a></section>
+      </main>
+
+      <footer class="site-footer"><a class="footer-brand" href="#top">shape<span>script</span></a><span>A tiny project for learning through drawing.</span><a href="https://github.com/thurein2003/Drawingm-heart-by-python" target="_blank" rel="noreferrer">View the project on GitHub ↗</a></footer>
+    </div>
+  </body>
+</html>
