@@ -1,6 +1,6 @@
 # ShapeScript
 
-ShapeScript turns the original Python turtle heart into an interactive drawing studio. Choose from 30 diagrams, pick an ink color, switch between Python, JavaScript, Java, or C++, then copy or download the matching code example. A light/dark theme switch remembers your choice in the browser.
+ShapeScript turns the original Python turtle heart into an interactive drawing studio. Choose from 30 diagrams, draw with the brush, line, rectangle, and oval tools, erase or undo marks, and adjust the ink color and brush size. The live code updates as you draw and can be copied or downloaded in Python, JavaScript, Java, or C++. A light/dark theme switch remembers your choice in the browser.
 
 **Live site:** <https://thurein2003.github.io/Drawingm-heart-by-python/>
 

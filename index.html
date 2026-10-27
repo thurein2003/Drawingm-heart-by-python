@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=5">
-    <script src="shapes.js?v=2" defer></script>
-    <script src="app.js?v=3" defer></script>
+    <link rel="stylesheet" href="styles.css?v=6">
+    <script src="shapes.js?v=3" defer></script>
+    <script src="app.js?v=4" defer></script>
   </head>
   <body>
     <div class="page-shell">
@@ -87,13 +87,24 @@
 
             <section class="preview-card" aria-labelledby="preview-title">
               <div class="workbench-topline"><div><span class="live-indicator"></span><span>LIVE PREVIEW</span></div><span class="preview-size">SVG · 500 × 320</span></div>
+              <div class="paint-toolbar" role="toolbar" aria-label="Drawing tools">
+                <div class="paint-tools" role="group" aria-label="Choose a drawing tool">
+                  <button class="paint-tool is-active" type="button" data-tool="brush" aria-pressed="true" title="Freehand brush"><span aria-hidden="true">✎</span>Brush</button>
+                  <button class="paint-tool" type="button" data-tool="line" aria-pressed="false" title="Draw a straight line"><span aria-hidden="true">╱</span>Line</button>
+                  <button class="paint-tool" type="button" data-tool="rectangle" aria-pressed="false" title="Draw a rectangle"><span aria-hidden="true">▱</span>Rect</button>
+                  <button class="paint-tool" type="button" data-tool="ellipse" aria-pressed="false" title="Draw an ellipse"><span aria-hidden="true">◯</span>Oval</button>
+                  <button class="paint-tool" type="button" data-tool="eraser" aria-pressed="false" title="Erase your brush marks"><span aria-hidden="true">⌫</span>Erase</button>
+                </div>
+                <label class="brush-size-control" for="brush-size"><span>Size</span><input id="brush-size" type="range" min="1" max="24" value="4"><output id="brush-size-value" for="brush-size">4 px</output></label>
+                <div class="paint-actions"><button class="paint-action" id="undo-drawing" type="button" disabled>Undo</button><button class="paint-action clear-action" id="clear-drawing" type="button">Clear</button></div>
+              </div>
               <div class="drawing-stage" id="drawing-stage">
                 <div class="stage-grid" aria-hidden="true"></div>
                 <div class="stage-caption"><span class="stage-index">FIG. 01</span><span id="stage-shape-label">THE HEART</span></div>
                 <svg id="preview-svg" viewBox="0 0 500 320" role="img" aria-label="Heart diagram preview" xmlns="http://www.w3.org/2000/svg"></svg>
                 <span class="stage-coordinate coord-left" aria-hidden="true">x: 250</span><span class="stage-coordinate coord-right" aria-hidden="true">y: 160</span>
               </div>
-              <div class="preview-footer"><div class="preview-shape-name"><span class="small-spark">✦</span><span id="preview-title">Heart</span><span class="tag-pill">VECTOR DRAWING</span></div><span class="preview-hint">Select a shape to begin</span></div>
+              <div class="preview-footer"><div class="preview-shape-name"><span class="small-spark">✦</span><span id="preview-title">Heart</span><span class="tag-pill">VECTOR DRAWING</span></div><span class="preview-hint">Choose a tool and draw on the canvas</span></div>
             </section>
 
             <section class="code-card" aria-labelledby="code-title">

@@ -223,30 +223,38 @@
     return points.map(([x, y]) => `${indent}${left}${x}, ${y}${right},`).join(NL);
   }
 
+  function pathStyle(path, defaultColor) {
+    return { color: path.color ?? defaultColor, width: path.width ?? 4 };
+  }
+
   function pythonCode(paths, color) {
-    const data = paths.map(shape => `    ([${NL}${pointRows(shape.points, "        ", true)}${NL}    ], ${shape.closed ? "True" : "False"}, ${shape.fill ? "True" : "False"}),`).join(NL);
+    const data = paths.map(shape => {
+      const style = pathStyle(shape, color);
+      return `    ([${NL}${pointRows(shape.points, "        ", true)}${NL}    ], ${shape.closed ? "True" : "False"}, ${shape.fill ? "True" : "False"}, "${style.color}", ${style.width}),`;
+    }).join(NL);
     return [
-      "import turtle", "", "pen = turtle.Turtle()", "pen.speed(0)", "pen.pensize(4)",
-      `pen.pencolor("${color}")`, `pen.fillcolor("${color}")`, "", "# Points are centered on the canvas.",
-      "paths = [", data, "]", "", "for points, closed, filled in paths:",
-      "    pen.penup()", "    pen.goto(points[0][0], -points[0][1])", "    if filled:", "        pen.begin_fill()",
-      "    pen.pendown()", "    for x, y in points[1:]:", "        pen.goto(x, -y)",
-      "    if closed:", "        pen.goto(points[0][0], -points[0][1])", "    if filled:", "        pen.end_fill()",
-      "", "pen.hideturtle()", "turtle.done()",
+      "import turtle", "", "pen = turtle.Turtle()", "pen.speed(0)", "", "# Points are centered on the canvas.",
+      "paths = [", data, "]", "", "for points, closed, filled, color, width in paths:",
+      "    pen.pencolor(color)", "    pen.fillcolor(color)", "    pen.pensize(width)", "    pen.penup()",
+      "    pen.goto(points[0][0], -points[0][1])", "    if filled:", "        pen.begin_fill()", "    pen.pendown()",
+      "    for x, y in points[1:]:", "        pen.goto(x, -y)", "    if closed:", "        pen.goto(points[0][0], -points[0][1])",
+      "    if filled:", "        pen.end_fill()", "", "pen.hideturtle()", "turtle.done()",
     ].join(NL);
   }
 
   function javascriptCode(paths, color) {
-    const data = paths.map(shape => `  {${NL}    points: [${NL}${pointRows(shape.points, "      ")}${NL}    ],${NL}    closed: ${shape.closed}, fill: ${shape.fill}${NL}  },`).join(NL);
+    const data = paths.map(shape => {
+      const style = pathStyle(shape, color);
+      return `  {${NL}    points: [${NL}${pointRows(shape.points, "      ")}${NL}    ],${NL}    closed: ${shape.closed}, fill: ${shape.fill},${NL}    color: "${style.color}", width: ${style.width}${NL}  },`;
+    }).join(NL);
     return [
       "// Add <canvas id=\"drawing\" width=\"540\" height=\"400\"></canvas> to your HTML.",
       "const canvas = document.querySelector(\"#drawing\");", "const ctx = canvas.getContext(\"2d\");",
-      "ctx.translate(canvas.width / 2, canvas.height / 2);", "ctx.scale(1, -1);", `ctx.strokeStyle = "${color}";`,
-      `ctx.fillStyle = "${color}24";`, "ctx.lineWidth = 4;", "ctx.lineJoin = \"round\";", "ctx.lineCap = \"round\";", "",
-      "const paths = [", data, "];", "", "for (const shape of paths) {", "  ctx.beginPath();",
-      "  shape.points.forEach(([x, y], index) => {", "    if (index === 0) ctx.moveTo(x, y);",
-      "    else ctx.lineTo(x, y);", "  });", "  if (shape.closed) ctx.closePath();", "  if (shape.fill) ctx.fill();",
-      "  ctx.stroke();", "}",
+      "ctx.translate(canvas.width / 2, canvas.height / 2);", "ctx.lineJoin = \"round\";", "ctx.lineCap = \"round\";", "",
+      "const paths = [", data, "];", "", "for (const shape of paths) {", "  ctx.beginPath();", "  ctx.strokeStyle = shape.color;",
+      "  ctx.fillStyle = shape.color + \"24\";", "  ctx.lineWidth = shape.width;", "  shape.points.forEach(([x, y], index) => {",
+      "    if (index === 0) ctx.moveTo(x, y);", "    else ctx.lineTo(x, y);", "  });", "  if (shape.closed) ctx.closePath();",
+      "  if (shape.fill) ctx.fill();", "  ctx.stroke();", "}",
     ].join(NL);
   }
 
@@ -254,18 +262,24 @@
     const data = paths.map(shape => `        new double[][] {${NL}${pointRows(shape.points, "            ", "brace")}${NL}        },`).join(NL);
     const closed = paths.map(shape => String(shape.closed)).join(", ");
     const filled = paths.map(shape => String(shape.fill)).join(", ");
-    const rgb = color.match(/[a-f\d]{2}/gi).map(value => parseInt(value, 16)).join(", ");
+    const inks = paths.map(shape => {
+      const rgb = pathStyle(shape, color).color.match(/[a-f\d]{2}/gi).map(value => parseInt(value, 16)).join(", ");
+      return `        new Color(${rgb}),`;
+    }).join(NL);
+    const widths = paths.map(shape => pathStyle(shape, color).width).join(", ");
     return [
       "import javax.swing.*;", "import java.awt.*;", "import java.awt.geom.*;", "", "public class ShapeDrawing extends JPanel {",
       "    private static final double[][][] POINTS = {", data, "    };", `    private static final boolean[] CLOSED = {${closed}};`,
-      `    private static final boolean[] FILLED = {${filled}};`, "", "    @Override", "    protected void paintComponent(Graphics graphics) {",
+      `    private static final boolean[] FILLED = {${filled}};`, `    private static final Color[] COLORS = {${NL}${inks}${NL}    };`,
+      `    private static final float[] WIDTHS = {${widths}};`, "", "    @Override", "    protected void paintComponent(Graphics graphics) {",
       "        super.paintComponent(graphics);", "        Graphics2D g2 = (Graphics2D) graphics.create();",
-      "        g2.translate(getWidth() / 2.0, getHeight() / 2.0);", "        g2.scale(1, -1);", "        g2.setStroke(new BasicStroke(4, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));",
-      "        for (int i = 0; i < POINTS.length; i++) {", "            Path2D shape = new Path2D.Double();",
+      "        g2.translate(getWidth() / 2.0, getHeight() / 2.0);", "        for (int i = 0; i < POINTS.length; i++) {",
+      "            g2.setStroke(new BasicStroke(WIDTHS[i], BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));", "            Path2D shape = new Path2D.Double();",
       "            shape.moveTo(POINTS[i][0][0], POINTS[i][0][1]);",
       "            for (int j = 1; j < POINTS[i].length; j++) shape.lineTo(POINTS[i][j][0], POINTS[i][j][1]);",
-      "            if (CLOSED[i]) shape.closePath();", "            if (FILLED[i]) {", `                g2.setColor(new Color(${rgb}, 40));`,
-      "                g2.fill(shape);", "            }", `            g2.setColor(Color.decode("${color}"));`, "            g2.draw(shape);", "        }",
+      "            if (CLOSED[i]) shape.closePath();", "            if (FILLED[i]) {", "                Color ink = COLORS[i];",
+      "                g2.setColor(new Color(ink.getRed(), ink.getGreen(), ink.getBlue(), 40));", "                g2.fill(shape);", "            }",
+      "            g2.setColor(COLORS[i]);", "            g2.draw(shape);", "        }",
       "        g2.dispose();", "    }", "", "    public static void main(String[] args) {", "        JFrame frame = new JFrame(\"Shape Drawing\");",
       "        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);", "        frame.setSize(540, 400);", "        frame.add(new ShapeDrawing());",
       "        frame.setLocationRelativeTo(null);", "        frame.setVisible(true);", "    }", "}",
@@ -275,30 +289,41 @@
   function cppCode(paths, color) {
     const data = paths.map(shape => `    {${NL}${pointRows(shape.points, "        ", "brace")}${NL}    },`).join(NL);
     const closed = paths.map(shape => String(shape.closed)).join(", ");
-    const rgb = color.match(/[a-f\d]{2}/gi).map(value => parseInt(value, 16)).join(", ");
+    const inks = paths.map(shape => {
+      const rgb = pathStyle(shape, color).color.match(/[a-f\d]{2}/gi).map(value => parseInt(value, 16)).join(", ");
+      return `    sf::Color(${rgb}),`;
+    }).join(NL);
+    const widths = paths.map(shape => `${pathStyle(shape, color).width}.0f`).join(", ");
     return [
-      "#include <SFML/Graphics.hpp>", "#include <vector>", "", "int main() {",
-      "    sf::RenderWindow window(sf::VideoMode(540, 400), \"Shape Drawing\");", `    const sf::Color ink(${rgb});`,
-      "    const std::vector<std::vector<sf::Vector2f>> paths = {", data, "    };", `    const std::vector<bool> closed = {${closed}};`, "",
+      "#include <SFML/Graphics.hpp>", "#include <vector>", "#include <cmath>", "", "int main() {",
+      "    sf::RenderWindow window(sf::VideoMode(540, 400), \"Shape Drawing\");",
+      "    const std::vector<std::vector<sf::Vector2f>> paths = {", data, "    };", `    const std::vector<bool> closed = {${closed}};`,
+      `    const std::vector<sf::Color> inks = {${NL}${inks}${NL}    };`, `    const std::vector<float> widths = {${widths}};`, "",
       "    while (window.isOpen()) {", "        sf::Event event;", "        while (window.pollEvent(event)) {",
       "            if (event.type == sf::Event::Closed) window.close();", "        }", "        window.clear(sf::Color(250, 250, 255));",
       "        for (std::size_t i = 0; i < paths.size(); ++i) {", "            const auto& points = paths[i];",
-      "            const std::size_t closingPoint = closed[i] ? 1 : 0;", "            sf::VertexArray outline(sf::LineStrip, points.size() + closingPoint);",
-      "            for (std::size_t j = 0; j < points.size(); ++j) {", "                outline[j].position = sf::Vector2f(270.f + points[j].x, 200.f - points[j].y);",
-      "                outline[j].color = ink;", "            }", "            if (closed[i]) {",
-      "                outline[points.size()].position = sf::Vector2f(270.f + points.front().x, 200.f - points.front().y);",
-      "                outline[points.size()].color = ink;", "            }", "            window.draw(outline);", "        }",
+      "            const std::size_t segments = points.size() - 1 + (closed[i] ? 1 : 0);", "            for (std::size_t j = 0; j < segments; ++j) {",
+      "                const auto a = points[j];", "                const auto b = points[(j + 1) % points.size()];", "                const float dx = b.x - a.x, dy = b.y - a.y;",
+      "                const float length = std::sqrt(dx * dx + dy * dy);", "                if (length == 0) continue;", "                const float ox = -dy / length * widths[i] / 2.f, oy = dx / length * widths[i] / 2.f;",
+      "                sf::VertexArray stroke(sf::Quads, 4);", "                stroke[0].position = {270.f + a.x + ox, 200.f + a.y + oy};",
+      "                stroke[1].position = {270.f + a.x - ox, 200.f + a.y - oy};", "                stroke[2].position = {270.f + b.x - ox, 200.f + b.y - oy};",
+      "                stroke[3].position = {270.f + b.x + ox, 200.f + b.y + oy};", "                for (std::size_t k = 0; k < 4; ++k) stroke[k].color = inks[i];",
+      "                window.draw(stroke);", "            }", "        }",
       "        window.display();", "    }", "}",
     ].join(NL);
   }
 
-  function generateCode(shape, language, color) {
-    const paths = model(shape);
+  function generateDrawingCode(paths, language, color) {
     if (language === "javascript") return javascriptCode(paths, color);
     if (language === "java") return javaCode(paths, color);
     if (language === "cpp") return cppCode(paths, color);
     return pythonCode(paths, color);
   }
 
-  window.ShapeStudio = { catalog, languages, model, generateCode };
+  function generateCode(shape, language, color) {
+    const paths = model(shape).map(path => ({ ...path, color, width: 4 }));
+    return generateDrawingCode(paths, language, color);
+  }
+
+  window.ShapeStudio = { catalog, languages, model, generateCode, generateDrawingCode };
 })();
