@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=7">
+    <link rel="stylesheet" href="styles.css?v=8">
     <script src="shapes.js?v=4" defer></script>
-    <script src="app.js?v=5" defer></script>
+    <script src="app.js?v=6" defer></script>
   </head>
   <body>
     <div class="page-shell">
@@ -94,7 +94,7 @@
                   <button class="paint-tool" type="button" data-tool="rectangle" aria-pressed="false" title="Draw a rectangle (R)"><span aria-hidden="true">▱</span>Rect</button>
                   <button class="paint-tool" type="button" data-tool="ellipse" aria-pressed="false" title="Draw an ellipse (O)"><span aria-hidden="true">◯</span>Oval</button>
                   <button class="paint-tool" type="button" data-tool="fill" aria-pressed="false" title="Fill a closed shape (F)"><span aria-hidden="true">▧</span>Fill</button>
-                  <button class="paint-tool" type="button" data-tool="eraser" aria-pressed="false" title="Erase your brush marks (E)"><span aria-hidden="true">⌫</span>Erase</button>
+                  <button class="paint-tool" type="button" data-tool="eraser" aria-pressed="false" title="Erase drawing marks (E)"><span aria-hidden="true"><svg class="eraser-glyph" viewBox="0 0 24 24"><path d="m4.1 14.7 9.8-9.8a2.2 2.2 0 0 1 3.1 0l2.1 2.1a2.2 2.2 0 0 1 0 3.1l-9.8 9.8H7.2l-3.1-3.1a1.5 1.5 0 0 1 0-2.1Z"/><path d="m9 9.8 6 6M4.5 20h7"/></svg></span>Erase</button>
                 </div>
                 <label class="brush-size-control" for="brush-size"><span>Size</span><input id="brush-size" type="range" min="1" max="24" value="4"><output id="brush-size-value" for="brush-size">4 px</output></label>
                 <label class="drawing-style-control" for="drawing-style" title="Choose the style for new rectangles and ovals"><span>Style</span><select id="drawing-style" aria-label="Shape fill and outline style"><option value="outline">Outline</option><option value="fill-outline">Fill + outline</option><option value="fill-only">Fill only</option></select></label>

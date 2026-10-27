@@ -520,11 +520,35 @@ function distanceToSegment(point, start, end) {
   return Math.hypot(point[0] - x, point[1] - y);
 }
 
+function pathNearEraser(path, point, radius) {
+  if (path.closed && path.fill && pointInPolygon(point, path.points)) return true;
+  const segmentCount = path.points.length - 1 + (path.closed ? 1 : 0);
+  for (let index = 0; index < segmentCount; index += 1) {
+    if (distanceToSegment(point, path.points[index], path.points[(index + 1) % path.points.length]) <= radius + path.width / 2) return true;
+  }
+  return false;
+}
+
 function eraseAt(point) {
   const radius = Math.max(brushWidth * 1.5, 7);
+  if (showPreset) {
+    const presetPaths = model(currentShape).map((path, index) => {
+      const override = presetFillOverrides[currentShape]?.[index] ?? {};
+      return { ...path, ...override, color: override.color ?? currentColor, width: 4, stroke: override.stroke ?? true };
+    });
+    if (presetPaths.some(path => pathNearEraser(path, point, radius))) {
+      paintPaths = [...presetPaths, ...paintPaths];
+      showPreset = false;
+      presetFillOverrides = {};
+    }
+  }
   let changed = false;
   const remaining = [];
   for (const path of paintPaths) {
+    if (path.closed && path.fill && pointInPolygon(point, path.points)) {
+      changed = true;
+      continue;
+    }
     if (path.points.length < 2) {
       if (Math.hypot(point[0] - path.points[0][0], point[1] - path.points[0][1]) <= radius) changed = true;
       else remaining.push(path);
@@ -583,9 +607,11 @@ previewSvg.addEventListener("pointerdown", event => {
   }
   pointerAction = { id: event.pointerId, tool: activeTool, start: point, pathIndex: -1, undoState: before, savedUndo: false };
   if (activeTool === "eraser") {
+    const wasPreset = showPreset;
     if (eraseAt(point)) {
       saveDrawingUndo(before);
       pointerAction.savedUndo = true;
+      if (wasPreset && !showPreset) renderShapeChoices();
     }
   } else if (activeTool === "brush") {
     saveDrawingUndo(before);
@@ -606,9 +632,13 @@ previewSvg.addEventListener("pointermove", event => {
   event.preventDefault();
   const point = pointOnCanvas(event);
   if (pointerAction.tool === "eraser") {
-    if (eraseAt(point) && !pointerAction.savedUndo) {
-      saveDrawingUndo(pointerAction.undoState);
-      pointerAction.savedUndo = true;
+    const wasPreset = showPreset;
+    if (eraseAt(point)) {
+      if (!pointerAction.savedUndo) {
+        saveDrawingUndo(pointerAction.undoState);
+        pointerAction.savedUndo = true;
+      }
+      if (wasPreset && !showPreset) renderShapeChoices();
     }
   }
   else if (pointerAction.tool === "brush") {
