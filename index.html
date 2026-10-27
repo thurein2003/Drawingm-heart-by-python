@@ -10,7 +10,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=4">
+    <link rel="stylesheet" href="styles.css?v=5">
     <script src="shapes.js?v=2" defer></script>
     <script src="app.js?v=3" defer></script>
   </head>
@@ -85,27 +85,25 @@
               <div class="privacy-note"><span class="privacy-icon">✦</span><span>Your choices stay in this browser.<br>No account or data collection.</span></div>
             </aside>
 
-            <div class="workbench">
-              <section class="preview-card" aria-labelledby="preview-title">
-                <div class="workbench-topline"><div><span class="live-indicator"></span><span>LIVE PREVIEW</span></div><span class="preview-size">SVG · 500 × 320</span></div>
-                <div class="drawing-stage" id="drawing-stage">
-                  <div class="stage-grid" aria-hidden="true"></div>
-                  <div class="stage-caption"><span class="stage-index">FIG. 01</span><span id="stage-shape-label">THE HEART</span></div>
-                  <svg id="preview-svg" viewBox="0 0 500 320" role="img" aria-label="Heart diagram preview" xmlns="http://www.w3.org/2000/svg"></svg>
-                  <span class="stage-coordinate coord-left" aria-hidden="true">x: 250</span><span class="stage-coordinate coord-right" aria-hidden="true">y: 160</span>
-                </div>
-                <div class="preview-footer"><div class="preview-shape-name"><span class="small-spark">✦</span><span id="preview-title">Heart</span><span class="tag-pill">VECTOR DRAWING</span></div><span class="preview-hint">Select a shape to begin</span></div>
-              </section>
+            <section class="preview-card" aria-labelledby="preview-title">
+              <div class="workbench-topline"><div><span class="live-indicator"></span><span>LIVE PREVIEW</span></div><span class="preview-size">SVG · 500 × 320</span></div>
+              <div class="drawing-stage" id="drawing-stage">
+                <div class="stage-grid" aria-hidden="true"></div>
+                <div class="stage-caption"><span class="stage-index">FIG. 01</span><span id="stage-shape-label">THE HEART</span></div>
+                <svg id="preview-svg" viewBox="0 0 500 320" role="img" aria-label="Heart diagram preview" xmlns="http://www.w3.org/2000/svg"></svg>
+                <span class="stage-coordinate coord-left" aria-hidden="true">x: 250</span><span class="stage-coordinate coord-right" aria-hidden="true">y: 160</span>
+              </div>
+              <div class="preview-footer"><div class="preview-shape-name"><span class="small-spark">✦</span><span id="preview-title">Heart</span><span class="tag-pill">VECTOR DRAWING</span></div><span class="preview-hint">Select a shape to begin</span></div>
+            </section>
 
-              <section class="code-card" aria-labelledby="code-title">
-                <div class="code-toolbar">
-                  <div class="code-file"><span class="file-dot"></span><span id="code-title">drawing.py</span><span class="code-subtitle" id="code-subtitle">Python · Turtle</span></div>
-                  <div class="code-actions"><button class="icon-button" id="copy-code" type="button" aria-label="Copy code" title="Copy code"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="6" width="10" height="11" rx="2"/><path d="M13 4V3.5A1.5 1.5 0 0 0 11.5 2h-7A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14H5"/></svg></button><button class="download-button" id="download-code" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m0 0 4-4m-4 4L6 8M3 14v3h14v-3"/></svg><span>Download</span></button></div>
-                </div>
-                <div class="code-window"><div class="line-rail" id="line-numbers" aria-hidden="true"></div><pre class="code-content"><code id="code-output" aria-live="polite"></code></pre></div>
-                <div class="code-footer"><span><span class="footer-dot"></span><span id="runtime-note">Runs with Python's built-in Turtle module</span></span><span class="copy-feedback" id="copy-feedback" role="status" aria-live="polite"></span></div>
-              </section>
-            </div>
+            <section class="code-card" aria-labelledby="code-title">
+              <div class="code-toolbar">
+                <div class="code-file"><span class="file-dot"></span><span id="code-title">drawing.py</span><span class="code-subtitle" id="code-subtitle">Python · Turtle</span></div>
+                <div class="code-actions"><button class="icon-button" id="copy-code" type="button" aria-label="Copy code" title="Copy code"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="6" width="10" height="11" rx="2"/><path d="M13 4V3.5A1.5 1.5 0 0 0 11.5 2h-7A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14H5"/></svg></button><button class="download-button" id="download-code" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m0 0 4-4m-4 4L6 8M3 14v3h14v-3"/></svg><span>Download</span></button></div>
+              </div>
+              <div class="code-window"><div class="line-rail" id="line-numbers" aria-hidden="true"></div><pre class="code-content"><code id="code-output" aria-live="polite"></code></pre></div>
+              <div class="code-footer"><span><span class="footer-dot"></span><span id="runtime-note">Runs with Python's built-in Turtle module</span></span><span class="copy-feedback" id="copy-feedback" role="status" aria-live="polite"></span></div>
+            </section>
           </div>
         </section>
 
