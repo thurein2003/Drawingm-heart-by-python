@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=6">
-    <script src="shapes.js?v=3" defer></script>
-    <script src="app.js?v=4" defer></script>
+    <link rel="stylesheet" href="styles.css?v=7">
+    <script src="shapes.js?v=4" defer></script>
+    <script src="app.js?v=5" defer></script>
   </head>
   <body>
     <div class="page-shell">
@@ -60,7 +60,7 @@
         <section class="studio-section" id="studio" aria-labelledby="studio-title">
           <div class="section-heading">
             <div><div class="section-kicker">THE PLAYGROUND</div><h2 id="studio-title">Your drawing studio</h2></div>
-            <p>Change a shape or language.<br>Your preview and code update together.</p>
+            <p>Draw on the canvas or edit coordinates in code.<br>Your preview and source stay in sync.</p>
           </div>
 
           <div class="studio-grid">
@@ -82,20 +82,22 @@
               <div class="color-palette" id="color-palette" role="group" aria-label="Choose a drawing color"></div>
               <div class="selected-color"><span class="selected-color-chip" id="selected-color-chip" aria-hidden="true"></span><span>Selected color</span><code id="color-value">#6258D9</code></div>
 
-              <div class="privacy-note"><span class="privacy-icon">✦</span><span>Your choices stay in this browser.<br>No account or data collection.</span></div>
+              <div class="privacy-note"><span class="privacy-icon">✦</span><span>Your drawings and choices stay in this browser.<br>No account or data collection.</span></div>
             </aside>
 
             <section class="preview-card" aria-labelledby="preview-title">
-              <div class="workbench-topline"><div><span class="live-indicator"></span><span>LIVE PREVIEW</span></div><span class="preview-size">SVG · 500 × 320</span></div>
+              <div class="workbench-topline"><div><span class="live-indicator"></span><span>LIVE PREVIEW</span></div><div class="preview-actions"><div class="zoom-controls" role="group" aria-label="Canvas zoom"><button class="mini-action" id="zoom-out" type="button" aria-label="Zoom out" title="Zoom out (−)">−</button><output id="zoom-value">100%</output><button class="mini-action" id="zoom-in" type="button" aria-label="Zoom in" title="Zoom in (+)">+</button><button class="mini-action" id="zoom-reset" type="button" title="Reset zoom (0)">Reset</button></div><button class="mini-action export-action" id="export-svg" type="button">SVG</button><button class="mini-action export-action" id="export-png" type="button">PNG</button></div></div>
               <div class="paint-toolbar" role="toolbar" aria-label="Drawing tools">
                 <div class="paint-tools" role="group" aria-label="Choose a drawing tool">
-                  <button class="paint-tool is-active" type="button" data-tool="brush" aria-pressed="true" title="Freehand brush"><span aria-hidden="true">✎</span>Brush</button>
-                  <button class="paint-tool" type="button" data-tool="line" aria-pressed="false" title="Draw a straight line"><span aria-hidden="true">╱</span>Line</button>
-                  <button class="paint-tool" type="button" data-tool="rectangle" aria-pressed="false" title="Draw a rectangle"><span aria-hidden="true">▱</span>Rect</button>
-                  <button class="paint-tool" type="button" data-tool="ellipse" aria-pressed="false" title="Draw an ellipse"><span aria-hidden="true">◯</span>Oval</button>
-                  <button class="paint-tool" type="button" data-tool="eraser" aria-pressed="false" title="Erase your brush marks"><span aria-hidden="true">⌫</span>Erase</button>
+                  <button class="paint-tool is-active" type="button" data-tool="brush" aria-pressed="true" title="Freehand brush (B)"><span aria-hidden="true">✎</span>Brush</button>
+                  <button class="paint-tool" type="button" data-tool="line" aria-pressed="false" title="Draw a straight line (L)"><span aria-hidden="true">╱</span>Line</button>
+                  <button class="paint-tool" type="button" data-tool="rectangle" aria-pressed="false" title="Draw a rectangle (R)"><span aria-hidden="true">▱</span>Rect</button>
+                  <button class="paint-tool" type="button" data-tool="ellipse" aria-pressed="false" title="Draw an ellipse (O)"><span aria-hidden="true">◯</span>Oval</button>
+                  <button class="paint-tool" type="button" data-tool="fill" aria-pressed="false" title="Fill a closed shape (F)"><span aria-hidden="true">▧</span>Fill</button>
+                  <button class="paint-tool" type="button" data-tool="eraser" aria-pressed="false" title="Erase your brush marks (E)"><span aria-hidden="true">⌫</span>Erase</button>
                 </div>
                 <label class="brush-size-control" for="brush-size"><span>Size</span><input id="brush-size" type="range" min="1" max="24" value="4"><output id="brush-size-value" for="brush-size">4 px</output></label>
+                <label class="drawing-style-control" for="drawing-style" title="Choose the style for new rectangles and ovals"><span>Style</span><select id="drawing-style" aria-label="Shape fill and outline style"><option value="outline">Outline</option><option value="fill-outline">Fill + outline</option><option value="fill-only">Fill only</option></select></label>
                 <div class="paint-actions"><button class="paint-action" id="undo-drawing" type="button" disabled>Undo</button><button class="paint-action clear-action" id="clear-drawing" type="button">Clear</button></div>
               </div>
               <div class="drawing-stage" id="drawing-stage">
@@ -110,9 +112,9 @@
             <section class="code-card" aria-labelledby="code-title">
               <div class="code-toolbar">
                 <div class="code-file"><span class="file-dot"></span><span id="code-title">drawing.py</span><span class="code-subtitle" id="code-subtitle">Python · Turtle</span></div>
-                <div class="code-actions"><button class="icon-button" id="copy-code" type="button" aria-label="Copy code" title="Copy code"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="6" width="10" height="11" rx="2"/><path d="M13 4V3.5A1.5 1.5 0 0 0 11.5 2h-7A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14H5"/></svg></button><button class="download-button" id="download-code" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m0 0 4-4m-4 4L6 8M3 14v3h14v-3"/></svg><span>Download</span></button></div>
+                <div class="code-actions"><button class="apply-code-button" id="apply-code" type="button" title="Apply edited coordinates to the canvas (Ctrl/⌘ + Enter)">Apply</button><button class="icon-button" id="copy-code" type="button" aria-label="Copy code" title="Copy code"><svg viewBox="0 0 20 20" aria-hidden="true"><rect x="6" y="6" width="10" height="11" rx="2"/><path d="M13 4V3.5A1.5 1.5 0 0 0 11.5 2h-7A1.5 1.5 0 0 0 3 3.5v9A1.5 1.5 0 0 0 4.5 14H5"/></svg></button><button class="download-button" id="download-code" type="button"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M10 2v10m0 0 4-4m-4 4L6 8M3 14v3h14v-3"/></svg><span>Download</span></button></div>
               </div>
-              <div class="code-window"><div class="line-rail" id="line-numbers" aria-hidden="true"></div><pre class="code-content"><code id="code-output" aria-live="polite"></code></pre></div>
+              <div class="code-window"><div class="line-rail" id="line-numbers" aria-hidden="true"></div><pre class="code-content"><code id="code-output" aria-label="Editable drawing source code" contenteditable="true" spellcheck="false" role="textbox" aria-multiline="true" aria-live="polite"></code></pre></div>
               <div class="code-footer"><span><span class="footer-dot"></span><span id="runtime-note">Runs with Python's built-in Turtle module</span></span><span class="copy-feedback" id="copy-feedback" role="status" aria-live="polite"></span></div>
             </section>
           </div>
