@@ -11,7 +11,11 @@ const previewSvg = document.querySelector("#preview-svg");
 const shapeGrid = document.querySelector("#shape-grid");
 const shapeSearch = document.querySelector("#shape-search");
 const noShapes = document.querySelector("#no-shapes");
+const colorPalette = document.querySelector("#color-palette");
+const customColorInput = document.querySelector("#custom-color");
 const themeColor = document.querySelector('meta[name="theme-color"]');
+let paletteColors = [];
+let paletteActiveIndex = 0;
 
 function renderShapeChoices(filter = shapeSearch.value) {
   const query = filter.trim().toLocaleLowerCase();
@@ -56,6 +60,75 @@ function highlightCode(source) {
     else if (/^[a-zA-Z]/.test(token)) category = "keyword";
     return `<span class="code-token ${category}">${token}</span>`;
   });
+}
+
+function hslToHex(hue, saturation, lightness) {
+  const s = saturation / 100;
+  const l = lightness / 100;
+  const chroma = (1 - Math.abs(2 * l - 1)) * s;
+  const secondary = chroma * (1 - Math.abs((hue / 60) % 2 - 1));
+  const offset = l - chroma / 2;
+  let rgb;
+  if (hue < 60) rgb = [chroma, secondary, 0];
+  else if (hue < 120) rgb = [secondary, chroma, 0];
+  else if (hue < 180) rgb = [0, chroma, secondary];
+  else if (hue < 240) rgb = [0, secondary, chroma];
+  else if (hue < 300) rgb = [secondary, 0, chroma];
+  else rgb = [chroma, 0, secondary];
+  return `#${rgb.map(channel => Math.round((channel + offset) * 255).toString(16).padStart(2, "0")).join("")}`;
+}
+
+function buildColorPalette() {
+  const featured = [
+    ["Violet", "#6258d9"], ["Coral", "#ed6a5a"], ["Green", "#218a72"], ["Blue", "#3573c8"],
+    ["Gold", "#d69a35"], ["Pink", "#ec4899"], ["Rose", "#f43f5e"], ["Purple", "#a855f7"],
+    ["Teal", "#14b8a6"], ["Charcoal", "#111827"],
+  ].map(([name, color]) => ({ name, color }));
+  const grayscale = Array.from({ length: 10 }, (_, index) => {
+    const level = Math.round(255 - (index * 235) / 9).toString(16).padStart(2, "0");
+    return { name: "Neutral", color: `#${level}${level}${level}` };
+  });
+  const families = [
+    ["Red", 0], ["Orange", 24], ["Amber", 38], ["Yellow", 52], ["Lime", 82], ["Green", 130],
+    ["Teal", 165], ["Cyan", 190], ["Sky", 210], ["Blue", 225], ["Indigo", 245], ["Violet", 265],
+    ["Magenta", 300], ["Pink", 330],
+  ];
+  const shades = [96, 89, 82, 75, 68, 61, 54, 47, 40, 30];
+  const spectrum = families.flatMap(([name, hue]) => shades.map((lightness, shadeIndex) => ({
+    name: `${name} shade ${shadeIndex + 1}`,
+    color: hslToHex(hue, 84, lightness),
+  })));
+  paletteColors = [...featured, ...grayscale, ...spectrum];
+
+  colorPalette.replaceChildren(...paletteColors.map(({ name, color }, index) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "color-swatch";
+    button.dataset.color = color;
+    button.dataset.colorIndex = String(index);
+    button.setAttribute("aria-label", `${name}, ${color.toUpperCase()}`);
+    button.setAttribute("aria-pressed", String(color === currentColor));
+    button.title = `${name} · ${color.toUpperCase()}`;
+    button.tabIndex = index === paletteActiveIndex ? 0 : -1;
+    button.style.setProperty("--swatch-color", color);
+    return button;
+  }));
+}
+
+function setInkColor(color, selectedIndex = null) {
+  currentColor = color.toLowerCase();
+  if (Number.isInteger(selectedIndex)) paletteActiveIndex = selectedIndex;
+
+  document.querySelectorAll(".color-swatch").forEach((button, index) => {
+    const selected = button.dataset.color === currentColor;
+    button.classList.toggle("is-selected", selected);
+    button.setAttribute("aria-pressed", String(selected));
+    button.tabIndex = index === paletteActiveIndex ? 0 : -1;
+  });
+  document.querySelector("#selected-color-chip").style.setProperty("--selected-color", currentColor);
+  document.querySelector("#color-value").textContent = currentColor.toUpperCase();
+  customColorInput.value = currentColor;
+  render();
 }
 
 function render() {
@@ -105,17 +178,20 @@ document.querySelector("#language-select").addEventListener("change", event => {
   render();
 });
 
-document.querySelectorAll(".color-choice").forEach(button => {
-  button.addEventListener("click", () => {
-    currentColor = button.dataset.color;
-    document.querySelectorAll(".color-choice").forEach(choice => {
-      const selected = choice === button;
-      choice.classList.toggle("selected", selected);
-      choice.setAttribute("aria-pressed", String(selected));
-    });
-    render();
-  });
+colorPalette.addEventListener("click", event => {
+  const swatch = event.target.closest(".color-swatch");
+  if (swatch) setInkColor(swatch.dataset.color, Number(swatch.dataset.colorIndex));
 });
+colorPalette.addEventListener("keydown", event => {
+  const movements = { ArrowLeft: -1, ArrowRight: 1, ArrowUp: -10, ArrowDown: 10 };
+  if (!(event.key in movements) && event.key !== "Home" && event.key !== "End") return;
+  event.preventDefault();
+  const last = paletteColors.length - 1;
+  const index = Number(event.target.dataset.colorIndex);
+  paletteActiveIndex = event.key === "Home" ? 0 : event.key === "End" ? last : Math.max(0, Math.min(last, index + movements[event.key]));
+  colorPalette.querySelector(`[data-color-index="${paletteActiveIndex}"]`).focus();
+});
+customColorInput.addEventListener("input", event => setInkColor(event.target.value));
 
 document.querySelectorAll("[data-theme-choice]").forEach(button => {
   button.addEventListener("click", () => setTheme(button.dataset.themeChoice));
@@ -159,4 +235,5 @@ try {
 setTheme(savedTheme);
 document.querySelector("#shape-total").textContent = catalog.length;
 renderShapeChoices();
+buildColorPalette();
 render();

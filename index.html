@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=3">
+    <link rel="stylesheet" href="styles.css?v=4">
     <script src="shapes.js?v=2" defer></script>
-    <script src="app.js?v=2" defer></script>
+    <script src="app.js?v=3" defer></script>
   </head>
   <body>
     <div class="page-shell">
@@ -75,14 +75,12 @@
               <label class="select-wrap" for="language-select"><span class="sr-only">Programming language</span><select id="language-select"><option value="python">Python · Turtle</option><option value="javascript">JavaScript · Canvas</option><option value="java">Java · Swing</option><option value="cpp">C++ · SFML</option></select><span class="select-chevron" aria-hidden="true">⌄</span></label>
 
               <div class="control-divider color-divider"></div>
-              <div class="color-heading"><div><h3>Ink color</h3><p>Pick an accent for your drawing.</p></div></div>
-              <div class="color-options" role="group" aria-label="Choose drawing color">
-                <button class="color-choice selected" type="button" data-color="#6258d9" style="--swatch:#6258d9" aria-label="Violet ink" aria-pressed="true"></button>
-                <button class="color-choice" type="button" data-color="#ed6a5a" style="--swatch:#ed6a5a" aria-label="Coral ink" aria-pressed="false"></button>
-                <button class="color-choice" type="button" data-color="#218a72" style="--swatch:#218a72" aria-label="Forest ink" aria-pressed="false"></button>
-                <button class="color-choice" type="button" data-color="#3573c8" style="--swatch:#3573c8" aria-label="Blue ink" aria-pressed="false"></button>
-                <button class="color-choice" type="button" data-color="#d69a35" style="--swatch:#d69a35" aria-label="Gold ink" aria-pressed="false"></button>
+              <div class="color-heading">
+                <div><h3>Ink color</h3><p>160 shades · includes pink</p></div>
+                <label class="spectrum-control" title="Choose any custom color"><input id="custom-color" type="color" value="#6258d9" aria-label="Choose a custom color"><span>Spectrum</span></label>
               </div>
+              <div class="color-palette" id="color-palette" role="group" aria-label="Choose a drawing color"></div>
+              <div class="selected-color"><span class="selected-color-chip" id="selected-color-chip" aria-hidden="true"></span><span>Selected color</span><code id="color-value">#6258D9</code></div>
 
               <div class="privacy-note"><span class="privacy-icon">✦</span><span>Your choices stay in this browser.<br>No account or data collection.</span></div>
             </aside>
