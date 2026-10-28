@@ -142,7 +142,7 @@ h1, h2, h3, p { margin-top: 0; }
 .brush-size-control { min-width: 104px; display: flex; flex: 1 1 110px; align-items: center; gap: 5px; color: #788092; font-size: 8px; font-weight: 700; }
 .brush-size-control input { width: 54px; min-width: 38px; flex: 1; accent-color: #6258d9; cursor: pointer; }
 .brush-size-control output { min-width: 24px; color: #535c70; font-family: "DM Mono", monospace; font-size: 8px; }
-.paint-actions { display: flex; gap: 3px; }
+.paint-actions { display: flex; flex-wrap: wrap; gap: 3px; }
 .drawing-style-control { display: flex; align-items: center; gap: 5px; color: #788092; font-size: 8px; font-weight: 700; white-space: nowrap; }
 .drawing-style-control select { max-width: 104px; height: 28px; padding: 0 5px; border: 1px solid #e5e7ef; border-radius: 7px; background: #fff; color: #596277; font-size: 8px; font-weight: 600; }
 .paint-action { min-width: 38px; border-color: #e5e7ef; background: #fff; }

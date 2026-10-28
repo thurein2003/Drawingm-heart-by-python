@@ -11,6 +11,7 @@ let showPreset = true;
 let paintPaths = [];
 let presetFillOverrides = {};
 let undoStack = [];
+let redoStack = [];
 let pointerAction = null;
 let copyTimer;
 let codeUpdateTimer;
@@ -52,32 +53,37 @@ function restoreDrawing() {
     if (Number.isFinite(saved.canvasZoom)) canvasZoom = Math.max(.5, Math.min(2.5, saved.canvasZoom));
     showPreset = saved.showPreset !== false;
     if (Array.isArray(saved.paintPaths)) paintPaths = saved.paintPaths.slice(0, 250).map(cleanPath).filter(Boolean);
-    if (saved.presetFillOverrides && typeof saved.presetFillOverrides === "object") {
-      for (const [shapeId, overrides] of Object.entries(saved.presetFillOverrides)) {
-        if (!catalog.some(shape => shape.id === shapeId) || !overrides || typeof overrides !== "object") continue;
-        presetFillOverrides[shapeId] = {};
-        for (const [index, override] of Object.entries(overrides)) {
-          if (!/^\d+$/.test(index) || !override || typeof override !== "object") continue;
-          const safe = { fill: Boolean(override.fill), stroke: override.stroke !== false };
-          if (/^#[\da-f]{6}$/i.test(override.color ?? "")) safe.color = override.color.toLowerCase();
-          presetFillOverrides[shapeId][index] = safe;
-        }
-      }
-    }
+    presetFillOverrides = cleanPresetFillOverrides(saved.presetFillOverrides);
   } catch {
     // Ignore incomplete or older browser saves.
   }
 }
 
-function cleanPath(path) {
+function cleanPath(path, fallbackColor = currentColor) {
   if (!path || !Array.isArray(path.points) || path.points.length < 2 || path.points.length > 800) return null;
   const points = path.points.filter(point => Array.isArray(point) && point.length >= 2 && Number.isFinite(point[0]) && Number.isFinite(point[1]) && Math.abs(point[0]) <= 500 && Math.abs(point[1]) <= 500).map(([x, y]) => [x, y]);
   if (points.length < 2) return null;
   return {
     points, closed: Boolean(path.closed), fill: Boolean(path.fill), stroke: path.stroke !== false,
-    color: /^#[\da-f]{6}$/i.test(path.color ?? "") ? path.color.toLowerCase() : currentColor,
+    color: /^#[\da-f]{6}$/i.test(path.color ?? "") ? path.color.toLowerCase() : fallbackColor,
     width: Number.isFinite(path.width) ? Math.max(1, Math.min(24, path.width)) : 4,
   };
+}
+
+function cleanPresetFillOverrides(rawOverrides) {
+  const clean = {};
+  if (!rawOverrides || typeof rawOverrides !== "object") return clean;
+  for (const [shapeId, overrides] of Object.entries(rawOverrides)) {
+    if (!catalog.some(shape => shape.id === shapeId) || !overrides || typeof overrides !== "object") continue;
+    clean[shapeId] = {};
+    for (const [index, override] of Object.entries(overrides)) {
+      if (!/^\d+$/.test(index) || !override || typeof override !== "object") continue;
+      const safe = { fill: Boolean(override.fill), stroke: override.stroke !== false };
+      if (/^#[\da-f]{6}$/i.test(override.color ?? "")) safe.color = override.color.toLowerCase();
+      clean[shapeId][index] = safe;
+    }
+  }
+  return clean;
 }
 
 function persistDrawing() {
@@ -251,6 +257,7 @@ function render(deferCode = false) {
   drawingStyleInput.value = drawingStyle;
   document.querySelector("#zoom-value").textContent = `${Math.round(canvasZoom * 100)}%`;
   undoButton.disabled = undoStack.length === 0;
+  document.querySelector("#redo-drawing").disabled = redoStack.length === 0;
   persistDrawing();
 }
 
@@ -272,6 +279,7 @@ function setTheme(theme) {
 
 function drawingSnapshot() {
   return {
+    currentShape,
     showPreset,
     paintPaths: paintPaths.map(path => ({ ...path, points: path.points.map(point => [...point]) })),
     presetFillOverrides: JSON.parse(JSON.stringify(presetFillOverrides)),
@@ -281,6 +289,7 @@ function drawingSnapshot() {
 function saveDrawingUndo(snapshot = drawingSnapshot()) {
   undoStack.push(snapshot);
   if (undoStack.length > 40) undoStack.shift();
+  redoStack = [];
 }
 
 function makeShapePath(tool, start, end) {
@@ -677,9 +686,24 @@ drawingStyleInput.addEventListener("change", event => {
 undoButton.addEventListener("click", () => {
   const previous = undoStack.pop();
   if (!previous) return;
+  redoStack.push(drawingSnapshot());
+  if (redoStack.length > 40) redoStack.shift();
+  currentShape = previous.currentShape ?? currentShape;
   showPreset = previous.showPreset;
   paintPaths = previous.paintPaths;
   presetFillOverrides = previous.presetFillOverrides;
+  renderShapeChoices();
+  render();
+});
+document.querySelector("#redo-drawing").addEventListener("click", () => {
+  const next = redoStack.pop();
+  if (!next) return;
+  undoStack.push(drawingSnapshot());
+  if (undoStack.length > 40) undoStack.shift();
+  currentShape = next.currentShape ?? currentShape;
+  showPreset = next.showPreset;
+  paintPaths = next.paintPaths;
+  presetFillOverrides = next.presetFillOverrides;
   renderShapeChoices();
   render();
 });
@@ -711,6 +735,78 @@ function downloadBlob(blob, filename) {
   link.remove();
   setTimeout(() => URL.revokeObjectURL(url), 1000);
 }
+
+function portableDrawing() {
+  return {
+    format: "shapescript-drawing",
+    version: 1,
+    savedAt: new Date().toISOString(),
+    currentShape, currentLanguage, currentColor, brushWidth, activeTool, drawingStyle, canvasZoom,
+    showPreset, paintPaths, presetFillOverrides,
+  };
+}
+
+function parsePortableDrawing(data) {
+  if (!data || data.format !== "shapescript-drawing" || data.version !== 1) {
+    throw new Error("That file is not a supported ShapeScript drawing.");
+  }
+  if (!catalog.some(shape => shape.id === data.currentShape)) throw new Error("The file has an unknown diagram.");
+  if (!Array.isArray(data.paintPaths) || data.paintPaths.length > 250) throw new Error("The file has too many or invalid drawing paths.");
+  const color = /^#[\da-f]{6}$/i.test(data.currentColor ?? "") ? data.currentColor.toLowerCase() : currentColor;
+  const paths = data.paintPaths.map(path => cleanPath(path, color));
+  if (paths.some(path => !path)) throw new Error("One or more drawing paths are invalid.");
+  return {
+    currentShape: data.currentShape,
+    currentLanguage: Object.hasOwn(languages, data.currentLanguage) ? data.currentLanguage : "python",
+    currentColor: color,
+    brushWidth: Number.isFinite(data.brushWidth) ? Math.max(1, Math.min(24, data.brushWidth)) : 4,
+    activeTool: ["brush", "line", "rectangle", "ellipse", "fill", "eraser"].includes(data.activeTool) ? data.activeTool : "brush",
+    drawingStyle: ["outline", "fill-outline", "fill-only"].includes(data.drawingStyle) ? data.drawingStyle : "outline",
+    canvasZoom: Number.isFinite(data.canvasZoom) ? Math.max(.5, Math.min(2.5, data.canvasZoom)) : 1,
+    showPreset: data.showPreset !== false,
+    paintPaths: paths,
+    presetFillOverrides: cleanPresetFillOverrides(data.presetFillOverrides),
+  };
+}
+
+document.querySelector("#save-drawing-file").addEventListener("click", () => {
+  const file = new Blob([JSON.stringify(portableDrawing(), null, 2)], { type: "application/json;charset=utf-8" });
+  downloadBlob(file, `shapescript-${currentShape}.json`);
+  codeFeedback.textContent = "DRAWING FILE SAVED";
+});
+
+const drawingFileInput = document.querySelector("#drawing-file-input");
+document.querySelector("#open-drawing-file").addEventListener("click", () => drawingFileInput.click());
+drawingFileInput.addEventListener("change", async () => {
+  const file = drawingFileInput.files?.[0];
+  if (!file) return;
+  try {
+    if (file.size > 8 * 1024 * 1024) throw new Error("Choose a drawing file smaller than 8 MB.");
+    const imported = parsePortableDrawing(JSON.parse(await file.text()));
+    saveDrawingUndo();
+    currentShape = imported.currentShape;
+    currentLanguage = imported.currentLanguage;
+    currentColor = imported.currentColor;
+    brushWidth = imported.brushWidth;
+    activeTool = imported.activeTool;
+    drawingStyle = imported.drawingStyle;
+    canvasZoom = imported.canvasZoom;
+    showPreset = imported.showPreset;
+    paintPaths = imported.paintPaths;
+    presetFillOverrides = imported.presetFillOverrides;
+    document.querySelector("#language-select").value = currentLanguage;
+    renderShapeChoices();
+    buildColorPalette();
+    setInkColor(currentColor);
+    setPaintTool(activeTool);
+    render();
+    codeFeedback.textContent = `OPENED ${file.name.toLocaleUpperCase()}`;
+  } catch (error) {
+    codeFeedback.textContent = error.message || "COULD NOT OPEN DRAWING FILE";
+  } finally {
+    drawingFileInput.value = "";
+  }
+});
 
 function drawingSvg() {
   const clone = previewSvg.cloneNode(true);
@@ -762,7 +858,12 @@ document.addEventListener("keydown", event => {
   if (target instanceof HTMLElement && (target.isContentEditable || ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName))) return;
   if ((event.ctrlKey || event.metaKey) && event.key.toLowerCase() === "z") {
     event.preventDefault();
-    undoButton.click();
+    document.querySelector(event.shiftKey ? "#redo-drawing" : "#undo-drawing").click();
+    return;
+  }
+  if (event.ctrlKey && event.key.toLowerCase() === "y") {
+    event.preventDefault();
+    document.querySelector("#redo-drawing").click();
     return;
   }
   const key = event.key.toLowerCase();

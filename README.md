@@ -2,7 +2,7 @@
 
 ShapeScript turns the original Python turtle heart into an interactive drawing studio. Choose from 30 diagrams, draw with the brush, line, rectangle, and oval tools, fill closed shapes, erase both the selected diagram and your added marks, and adjust the ink color and brush size. Drawings and studio preferences are saved in the browser, so they stay after a refresh.
 
-The source panel is editable: change the path coordinates or style values, then choose **Apply** (or press Ctrl/⌘ + Enter) to update the canvas. Canvas changes regenerate the source in Python, JavaScript, Java, or C++. Export your drawing as PNG or SVG, zoom the canvas, and use keyboard shortcuts: B brush, L line, R rectangle, O oval, F fill, E eraser, +/− zoom, 0 reset zoom, and Ctrl/⌘ + Z undo.
+The source panel is editable: change the path coordinates or style values, then choose **Apply** (or press Ctrl/⌘ + Enter) to update the canvas. Canvas changes regenerate the source in Python, JavaScript, Java, or C++. Export your drawing as PNG or SVG, or save and reopen it as a portable JSON drawing file. Undo and redo work with the toolbar or Ctrl/⌘ + Z and Ctrl/⌘ + Shift + Z (Ctrl + Y on Windows). Other keyboard shortcuts: B brush, L line, R rectangle, O oval, F fill, E eraser, +/− zoom, and 0 reset zoom.
 
 **Live site:** <https://thurein2003.github.io/Drawingm-heart-by-python/>
 

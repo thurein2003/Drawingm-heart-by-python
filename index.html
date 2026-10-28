@@ -10,9 +10,9 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="styles.css?v=8">
+    <link rel="stylesheet" href="styles.css?v=9">
     <script src="shapes.js?v=4" defer></script>
-    <script src="app.js?v=6" defer></script>
+    <script src="app.js?v=7" defer></script>
   </head>
   <body>
     <div class="page-shell">
@@ -98,7 +98,7 @@
                 </div>
                 <label class="brush-size-control" for="brush-size"><span>Size</span><input id="brush-size" type="range" min="1" max="24" value="4"><output id="brush-size-value" for="brush-size">4 px</output></label>
                 <label class="drawing-style-control" for="drawing-style" title="Choose the style for new rectangles and ovals"><span>Style</span><select id="drawing-style" aria-label="Shape fill and outline style"><option value="outline">Outline</option><option value="fill-outline">Fill + outline</option><option value="fill-only">Fill only</option></select></label>
-                <div class="paint-actions"><button class="paint-action" id="undo-drawing" type="button" disabled>Undo</button><button class="paint-action clear-action" id="clear-drawing" type="button">Clear</button></div>
+                <div class="paint-actions" aria-label="Drawing history and files"><button class="paint-action" id="undo-drawing" type="button" disabled title="Undo (Ctrl/⌘ + Z)">Undo</button><button class="paint-action" id="redo-drawing" type="button" disabled title="Redo (Ctrl/⌘ + Shift + Z)">Redo</button><button class="paint-action" id="save-drawing-file" type="button" title="Download a portable drawing file">Save file</button><button class="paint-action" id="open-drawing-file" type="button" title="Open a saved drawing file">Open file</button><input id="drawing-file-input" type="file" accept=".json,application/json" hidden><button class="paint-action clear-action" id="clear-drawing" type="button">Clear</button></div>
               </div>
               <div class="drawing-stage" id="drawing-stage">
                 <div class="stage-grid" aria-hidden="true"></div>
